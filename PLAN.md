@@ -1,7 +1,29 @@
 # Rec League Commissioner Dashboard — PLAN.md
 
+## Why We're Building This
+
+The sports league management space has existing players: TeamSnap, LeagueApps, Spond, TeamLinkt, Heja, Stack Team App. Price is no longer the gap — several free options exist.
+
+**The real shortfalls we're solving:**
+
+1. **Every tool requires an app install** — parents and players don't want another app for one recreational league. None of the existing tools offer a dead-simple public web URL that works with no login, no install, no account.
+
+2. **Built for teams, not leagues** — most tools manage one team's roster and attendance. League-level features (round-robin schedule generation across 6-20 teams, cross-team standings, rainout rescheduling) are weak or paywalled.
+
+3. **Too complex for volunteer use cases** — even free tools have onboarding flows, settings menus, feature pages. A volunteer spending 2 hours/week on league management shouldn't need to learn software.
+
+4. **Upsell pressure destroys trust** — TeamSnap reviewers cite ads, accidental subscriptions, constant upsell prompts on the free tier.
+
+**Our differentiator: radical simplicity + no install**
+- Commissioner running in under 5 minutes
+- Players/parents get a link — no app, no account, no friction
+- Does exactly 5 things well, nothing more
+- The public URL is the distribution mechanism — commissioners share it with 60-100 people organically
+
+---
+
 ## Problem
-Volunteer rec league commissioners manage schedules, standings, and rainouts using Google Sheets and group texts. Existing tools (TeamSnap, LeagueApps) cost $100–$150/month — built for organizations, not volunteers.
+Volunteer rec league commissioners manage schedules, standings, and rainouts using Google Sheets and group texts. Existing free tools (Spond, TeamLinkt) still require app installs and are too complex for a volunteer running a casual league.
 
 ## Solution (V1)
 A free web app where a commissioner can:

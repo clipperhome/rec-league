@@ -9,3 +9,76 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+enum GameStatus {
+  SCHEDULED
+  COMPLETED
+  RAINED_OUT
+  RESCHEDULED
+}
+
+model League {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique
+  sport             String?
+  seasonLabel       String?
+  commissionerEmail String?
+  gameNights        String?
+  fieldNames        String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  teams Team[]
+  games Game[]
+
+  @@index([commissionerEmail])
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  leagueId  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  league    League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  homeGames Game[] @relation("HomeTeamGames")
+  awayGames Game[] @relation("AwayTeamGames")
+
+  @@unique([leagueId, name])
+  @@index([leagueId])
+}
+
+model Game {
+  id          String     @id @default(cuid())
+  leagueId    String
+  round       Int
+  homeTeamId  String
+  awayTeamId  String
+  scheduledAt DateTime?
+  fieldName   String?
+  status      GameStatus @default(SCHEDULED)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  league   League  @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  homeTeam Team    @relation("HomeTeamGames", fields: [homeTeamId], references: [id], onDelete: Cascade)
+  awayTeam Team    @relation("AwayTeamGames", fields: [awayTeamId], references: [id], onDelete: Cascade)
+  result   Result?
+
+  @@index([leagueId, round])
+  @@index([homeTeamId])
+  @@index([awayTeamId])
+}
+
+model Result {
+  id          String   @id @default(cuid())
+  gameId      String   @unique
+  homeScore   Int
+  awayScore   Int
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}
