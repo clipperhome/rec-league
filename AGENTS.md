@@ -36,6 +36,5 @@
 - Don't refactor working code mid-task
 
 ## Current Task
-**Batch 1:**
-- Task A: Create Prisma schema with League, Team, Game, Result models + set up db.ts client
-- Task B: Implement round-robin schedule algorithm in lib/schedule.ts (pure function, takes array of team names + number of rounds, returns array of matchups with round/home/away)
+**Batch 4:**
+- Task H: Deploy to Vercel + env setup

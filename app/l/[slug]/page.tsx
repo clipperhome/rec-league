@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 
 import { db } from "@/lib/db";
+import { getScoreLabels } from "@/lib/sport-labels";
 import { buildStandings } from "@/lib/standings";
+
+import { CopyLinkButton } from "./copy-link-button";
 
 export const dynamic = "force-dynamic";
 
@@ -9,14 +12,18 @@ type LeaguePageProps = {
   params: Promise<{
     slug: string;
   }>;
+  searchParams: Promise<{
+    team?: string;
+  }>;
 };
 
 type LeagueRecord = NonNullable<Awaited<ReturnType<typeof getLeagueBySlug>>>;
 type LeagueGame = LeagueRecord["games"][number];
 type GameDisplayStatus = "completed" | "rained_out" | "rescheduled" | "scheduled";
 
-export default async function LeaguePage({ params }: LeaguePageProps) {
+export default async function LeaguePage({ params, searchParams }: LeaguePageProps) {
   const { slug } = await params;
+  const { team: selectedTeamId } = await searchParams;
   const league = await getLeagueBySlug(slug);
 
   if (!league) {
@@ -24,7 +31,18 @@ export default async function LeaguePage({ params }: LeaguePageProps) {
   }
 
   const standings = buildStandings(league.teams, league.games);
-  const rounds = groupGamesByRound(league.games);
+
+  const filteredGames = selectedTeamId
+    ? league.games.filter(
+        (g) => g.homeTeamId === selectedTeamId || g.awayTeamId === selectedTeamId,
+      )
+    : league.games;
+  const selectedTeam = selectedTeamId
+    ? league.teams.find((t) => t.id === selectedTeamId)
+    : null;
+
+  const rounds = groupGamesByRound(filteredGames);
+  const scoreLabels = getScoreLabels(league.sport);
   const leagueMeta = [league.sport, league.seasonLabel ?? league.fieldNames]
     .map((value) => value?.trim() ?? "")
     .filter(Boolean);
@@ -43,8 +61,15 @@ export default async function LeaguePage({ params }: LeaguePageProps) {
             <p className="mt-3 text-sm text-zinc-600">
               {leagueMeta.join(" • ")}
             </p>
-          ) : null}
-        </section>
+          ) : null}          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-zinc-200 pt-4">
+            <CopyLinkButton />
+            <a
+              className="text-sm text-zinc-400 transition hover:text-zinc-700"
+              href={`/dashboard/${slug}/login`}
+            >
+              Commissioner login
+            </a>
+          </div>        </section>
 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]">
           <section className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
@@ -65,9 +90,9 @@ export default async function LeaguePage({ params }: LeaguePageProps) {
                     <th className="px-3 py-3 font-medium">L</th>
                     <th className="px-3 py-3 font-medium">T</th>
                     <th className="px-3 py-3 font-medium">Pts</th>
-                    <th className="px-3 py-3 font-medium">GF</th>
-                    <th className="px-3 py-3 font-medium">GA</th>
-                    <th className="px-3 py-3 font-medium">GD</th>
+                    <th className="px-3 py-3 font-medium">{scoreLabels.scoreFor}</th>
+                    <th className="px-3 py-3 font-medium">{scoreLabels.scoreAgainst}</th>
+                    <th className="px-3 py-3 font-medium">{scoreLabels.scoreDiff}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -102,10 +127,39 @@ export default async function LeaguePage({ params }: LeaguePageProps) {
 
           <section className="space-y-5">
             <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
-              <h2 className="text-xl font-semibold text-zinc-900">Schedule</h2>
+              <h2 className="text-xl font-semibold text-zinc-900">
+                {selectedTeam ? `${selectedTeam.name}'s Schedule` : "Schedule"}
+              </h2>
               <p className="mt-1 text-sm text-zinc-500">
-                Results appear here as games are reported.
+                {selectedTeam
+                  ? `Showing only games for ${selectedTeam.name}.`
+                  : "Results appear here as games are reported."}
               </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <a
+                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                    !selectedTeamId
+                      ? "bg-zinc-900 text-white"
+                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                  }`}
+                  href={`/l/${slug}`}
+                >
+                  All teams
+                </a>
+                {league.teams.map((t) => (
+                  <a
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                      selectedTeamId === t.id
+                        ? "bg-zinc-900 text-white"
+                        : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                    }`}
+                    href={`/l/${slug}?team=${t.id}`}
+                    key={t.id}
+                  >
+                    {t.name}
+                  </a>
+                ))}
+              </div>
             </div>
 
             {rounds.map(([round, games]) => (

@@ -18,6 +18,16 @@ export async function submitResult(
 ): Promise<void> {
   const game = await getGameWithLeagueSlug(gameId);
 
+  // Check if game is locked
+  const fullGame = await db.game.findUnique({
+    where: { id: gameId },
+    select: { locked: true },
+  });
+
+  if (fullGame?.locked) {
+    throw new Error("Game is locked. Unlock it before editing the score.");
+  }
+
   await db.$transaction(async (tx) => {
     await tx.result.upsert({
       where: {
@@ -183,4 +193,24 @@ function parseRequiredNonNegativeInt(value: string): number {
 function revalidateLeagueViews(slug: string): void {
   revalidatePath(`/dashboard/${slug}`);
   revalidatePath(`/l/${slug}`);
+}
+
+export async function toggleLockAction(formData: FormData): Promise<void> {
+  const gameId = readString(formData, "gameId");
+
+  if (!gameId) return;
+
+  const game = await db.game.findUnique({
+    where: { id: gameId },
+    select: { locked: true, league: { select: { slug: true } } },
+  });
+
+  if (!game) throw new Error("Game not found.");
+
+  await db.game.update({
+    where: { id: gameId },
+    data: { locked: !game.locked },
+  });
+
+  revalidateLeagueViews(game.league.slug);
 }

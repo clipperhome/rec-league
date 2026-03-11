@@ -10,6 +10,7 @@ import {
 const initialState: CreateLeagueActionState = {
   fieldErrors: {},
   fields: {
+    commissionerEmail: "",
     leagueName: "",
     seasonLabel: "",
     sport: "",
@@ -51,6 +52,29 @@ export default function NewLeaguePage() {
           ) : null}
 
           <div className="grid gap-6 sm:grid-cols-2">
+            <label className="space-y-2 sm:col-span-2">
+              <span className="text-sm font-medium text-zinc-900">
+                Your email
+              </span>
+              <input
+                aria-invalid={Boolean(state.fieldErrors.commissionerEmail)}
+                className="w-full rounded-2xl border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-900"
+                defaultValue={state.fields.commissionerEmail}
+                name="commissionerEmail"
+                placeholder="you@example.com"
+                required
+                type="email"
+              />
+              <p className="text-sm text-zinc-500">
+                Used to log in and manage the league — never shared publicly.
+              </p>
+              {state.fieldErrors.commissionerEmail ? (
+                <p className="text-sm text-red-600">
+                  {state.fieldErrors.commissionerEmail}
+                </p>
+              ) : null}
+            </label>
+
             <label className="space-y-2 sm:col-span-2">
               <span className="text-sm font-medium text-zinc-900">
                 League name

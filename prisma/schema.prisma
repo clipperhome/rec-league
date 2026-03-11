@@ -29,10 +29,37 @@ model League {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  teams Team[]
-  games Game[]
+  teams          Team[]
+  games          Game[]
+  magicLinkTokens MagicLinkToken[]
 
   @@index([commissionerEmail])
+}
+
+model MagicLinkToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  email     String
+  leagueId  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([email, leagueId])
+}
+
+model CommissionerSession {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  email     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([email])
 }
 
 model Team {
@@ -58,6 +85,7 @@ model Game {
   awayTeamId  String
   scheduledAt DateTime?
   fieldName   String?
+  locked      Boolean    @default(false)
   status      GameStatus @default(SCHEDULED)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt

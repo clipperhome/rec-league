@@ -2,12 +2,15 @@
 
 import { randomUUID } from "node:crypto";
 
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
+import { createSession, setSessionCookie } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { generateRoundRobinSchedule } from "@/lib/schedule";
 
 type CreateLeagueFormFields = {
+  commissionerEmail: string;
   leagueName: string;
   sport: string;
   seasonLabel: string;
@@ -15,7 +18,7 @@ type CreateLeagueFormFields = {
 };
 
 type CreateLeagueFieldErrors = Partial<
-  Record<"leagueName" | "teamNames", string>
+  Record<"commissionerEmail" | "leagueName" | "teamNames", string>
 >;
 
 export type CreateLeagueActionState = {
@@ -30,9 +33,17 @@ export async function createLeagueAction(
 ): Promise<CreateLeagueActionState> {
   const fields = readFormFields(formData);
   const teamNames = parseTeamNames(fields.teamNames);
-  const fieldErrors = validateFields(fields.leagueName, teamNames);
+  const fieldErrors = validateFields(
+    fields.leagueName,
+    teamNames,
+    fields.commissionerEmail,
+  );
 
-  if (fieldErrors.leagueName || fieldErrors.teamNames) {
+    if (
+      fieldErrors.leagueName ||
+      fieldErrors.teamNames ||
+      fieldErrors.commissionerEmail
+    ) {
     return {
       fields,
       fieldErrors,
@@ -47,7 +58,7 @@ export async function createLeagueAction(
     const createdLeague = await db.$transaction(async (tx) => {
       const league = await tx.league.create({
         data: {
-          commissionerEmail: null,
+          commissionerEmail: fields.commissionerEmail.trim().toLowerCase(),
           name: fields.leagueName.trim(),
           seasonLabel: fields.seasonLabel.trim() || null,
           slug,
@@ -95,8 +106,17 @@ export async function createLeagueAction(
       return league;
     });
 
-    redirect(`/l/${createdLeague.slug}`);
+    const sessionToken = await createSession(
+      fields.commissionerEmail.trim().toLowerCase(),
+    );
+    await setSessionCookie(sessionToken);
+
+    redirect(`/dashboard/${createdLeague.slug}`);
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
     console.error(error);
 
     return {
@@ -109,6 +129,7 @@ export async function createLeagueAction(
 
 function readFormFields(formData: FormData): CreateLeagueFormFields {
   return {
+    commissionerEmail: readFormValue(formData, "commissionerEmail"),
     leagueName: readFormValue(formData, "leagueName"),
     seasonLabel: readFormValue(formData, "seasonLabel"),
     sport: readFormValue(formData, "sport"),
@@ -125,6 +146,7 @@ function readFormValue(formData: FormData, fieldName: string): string {
 function validateFields(
   leagueName: string,
   teamNames: string[],
+  commissionerEmail: string,
 ): CreateLeagueFieldErrors {
   const fieldErrors: CreateLeagueFieldErrors = {};
 
@@ -134,6 +156,12 @@ function validateFields(
 
   if (teamNames.length < 2) {
     fieldErrors.teamNames = "Add at least 2 unique team names.";
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!commissionerEmail.trim() || !emailRegex.test(commissionerEmail.trim())) {
+    fieldErrors.commissionerEmail = "A valid email is required.";
   }
 
   return fieldErrors;
