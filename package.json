@@ -2,34 +2,65 @@
   "name": "rec-league",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0 || >=24.0.0"
+  },
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
-    "postinstall": "prisma generate",
+    "build": "npm run schema:check && npm run portable:build && npm run db:generate && next build",
+    "postinstall": "npm run db:generate",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "portable:build": "npm run portable:typecheck && npm run portable:test && vite build --config vite.portable.config.ts && node scripts/verify-portable-build.mjs && node scripts/publish-portable-build.mjs",
+    "portable:dev": "vite --config vite.portable.config.ts",
+    "portable:test": "tsx --test lib/portable-editor.test.ts",
+    "portable:typecheck": "tsc -p tsconfig.portable.json --noEmit",
+    "schema:generate": "tsx scripts/generate-portable-schema.ts",
+    "schema:check": "tsx scripts/generate-portable-schema.ts --check",
+    "db:schema:check": "node scripts/check-prisma-schema-parity.mjs",
+    "test": "tsx --test lib/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run schema:check && npm run db:schema:check && npm test && npm run lint && npm run typecheck && npm run portable:build",
+    "db:generate": "node scripts/generate-prisma.mjs",
+    "db:migrate": "node scripts/migrate-database.mjs",
+    "db:migrate:dev": "node scripts/migrate-database.mjs dev"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.4.2",
-    "@prisma/adapter-pg": "^7.4.2",
-    "@prisma/client": "^7.4.2",
+    "@prisma/adapter-better-sqlite3": "^7.10.0",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "better-sqlite3": "^12.6.2",
-    "next": "16.1.6",
+    "exceljs": "^4.4.0",
+    "idb": "^8.0.3",
+    "next": "16.3.5",
     "pg": "^8.20.0",
-    "prisma": "^7.4.2",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/pg": "^8.18.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.1.1",
     "dotenv": "^17.3.1",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.3.5",
+    "prisma": "^7.10.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "4.23.13",
+    "typescript": "^5",
+    "vite": "^7.3.5",
+    "vite-plugin-singlefile": "^2.3.3"
+  },
+  "overrides": {
+    "deepmerge-ts": "8.0.2",
+    "esbuild": "0.28.2",
+    "mysql2": "3.24.4",
+    "uuid": "11.1.1"
   }
 }

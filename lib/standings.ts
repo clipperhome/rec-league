@@ -28,9 +28,22 @@ export type StandingsRow = {
   wins: number;
 };
 
+export type StandingsRules = {
+  lossPoints: number;
+  tiePoints: number;
+  winPoints: number;
+};
+
+const DEFAULT_RULES: StandingsRules = {
+  lossPoints: 0,
+  tiePoints: 1,
+  winPoints: 3,
+};
+
 export function buildStandings(
   teams: StandingsTeam[],
   games: StandingsGame[],
+  rules: StandingsRules = DEFAULT_RULES,
 ): StandingsRow[] {
   const standings = new Map<string, StandingsRow>(
     teams.map((team) => [
@@ -75,22 +88,24 @@ export function buildStandings(
 
     if (homeScore > awayScore) {
       homeRow.wins += 1;
-      homeRow.points += 3;
+      homeRow.points += rules.winPoints;
       awayRow.losses += 1;
+      awayRow.points += rules.lossPoints;
       continue;
     }
 
     if (awayScore > homeScore) {
       awayRow.wins += 1;
-      awayRow.points += 3;
+      awayRow.points += rules.winPoints;
       homeRow.losses += 1;
+      homeRow.points += rules.lossPoints;
       continue;
     }
 
     homeRow.ties += 1;
     awayRow.ties += 1;
-    homeRow.points += 1;
-    awayRow.points += 1;
+    homeRow.points += rules.tiePoints;
+    awayRow.points += rules.tiePoints;
   }
 
   return Array.from(standings.values())

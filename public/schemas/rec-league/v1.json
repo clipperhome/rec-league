@@ -1,0 +1,2123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://gameology.space/schemas/rec-league/v1.json"
+    },
+    "dataRevision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "documentId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+    },
+    "export": {
+      "type": "object",
+      "properties": {
+        "appVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "containsPrivateData": {
+          "type": "boolean"
+        },
+        "exportedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "organizer-backup",
+            "public-snapshot",
+            "spreadsheet-operations",
+            "team-manager-packet"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "connected",
+            "local-only"
+          ]
+        }
+      },
+      "required": [
+        "appVersion",
+        "containsPrivateData",
+        "exportedAt",
+        "scope",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "format": {
+      "type": "string",
+      "const": "gameology.rec-league"
+    },
+    "games": {
+      "maxItems": 5000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "awayTeamId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+          },
+          "createdAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+          },
+          "fieldName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "homeTeamId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "round": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "scheduled": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "localDate": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "localTime": {
+                    "type": "string",
+                    "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                  },
+                  "timeZone": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "utc": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  }
+                },
+                "required": [
+                  "localDate",
+                  "localTime",
+                  "timeZone",
+                  "utc"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "COMPLETED",
+              "RAINED_OUT",
+              "RESCHEDULED",
+              "SCHEDULED"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "awayTeamId",
+          "createdAt",
+          "fieldName",
+          "homeTeamId",
+          "id",
+          "locked",
+          "round",
+          "scheduled",
+          "status",
+          "updatedAt",
+          "version"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "league": {
+      "type": "object",
+      "properties": {
+        "archivedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "publicUpdatedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+        },
+        "schedule": {
+          "type": "object",
+          "properties": {
+            "durationMinutes": {
+              "type": "integer",
+              "minimum": 5,
+              "maximum": 1440
+            },
+            "fields": {
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 80
+              }
+            },
+            "startDate": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "startTimes": {
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+              }
+            },
+            "weekdays": {
+              "maxItems": 7,
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 6
+              }
+            }
+          },
+          "required": [
+            "durationMinutes",
+            "fields",
+            "startDate",
+            "startTimes",
+            "weekdays"
+          ],
+          "additionalProperties": false
+        },
+        "scoring": {
+          "type": "object",
+          "properties": {
+            "lossPoints": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 99
+            },
+            "showStandings": {
+              "type": "boolean"
+            },
+            "tiePoints": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 99
+            },
+            "winPoints": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 99
+            }
+          },
+          "required": [
+            "lossPoints",
+            "showStandings",
+            "tiePoints",
+            "winPoints"
+          ],
+          "additionalProperties": false
+        },
+        "seasonLabel": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 60
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "sport": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 60
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timeZone": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "updatedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+        },
+        "venue": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 180
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "name": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "url": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "address",
+            "name",
+            "url"
+          ],
+          "additionalProperties": false
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "archivedAt",
+        "createdAt",
+        "id",
+        "name",
+        "publicUpdatedAt",
+        "schedule",
+        "scoring",
+        "seasonLabel",
+        "slug",
+        "sport",
+        "timeZone",
+        "updatedAt",
+        "venue",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "privateData": {
+      "type": "object",
+      "properties": {
+        "activity": {
+          "maxItems": 10000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "actorEmail": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 254,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "actorRole": {
+                "type": "string",
+                "enum": [
+                  "IMPORT",
+                  "MANAGER",
+                  "ORGANIZER",
+                  "SYSTEM",
+                  "UNKNOWN"
+                ]
+              },
+              "createdAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+              },
+              "details": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "$ref": "#/$defs/__schema0"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "gameId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+              },
+              "summary": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "teamId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": {
+                "type": "string",
+                "maxLength": 100
+              }
+            },
+            "required": [
+              "actorEmail",
+              "actorRole",
+              "createdAt",
+              "details",
+              "gameId",
+              "id",
+              "summary",
+              "teamId",
+              "type"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "managers": {
+          "maxItems": 1000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "acceptedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "createdAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+              },
+              "email": {
+                "type": "string",
+                "maxLength": 254,
+                "format": "email",
+                "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+              },
+              "teamId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+              },
+              "updatedAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "acceptedAt",
+              "createdAt",
+              "email",
+              "id",
+              "teamId",
+              "updatedAt",
+              "version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "organizerContactEmail": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 254,
+              "format": "email",
+              "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reports": {
+          "maxItems": 10000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "awayScore": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 999
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "createdAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+              },
+              "decisionNote": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "gameId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+              },
+              "gameVersion": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "homeScore": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 999
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+              },
+              "note": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "proposedFieldName": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 80
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "proposedScheduled": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "localDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                      },
+                      "localTime": {
+                        "type": "string",
+                        "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                      },
+                      "timeZone": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "utc": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                      }
+                    },
+                    "required": [
+                      "localDate",
+                      "localTime",
+                      "timeZone",
+                      "utc"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "APPROVED",
+                  "PENDING",
+                  "REJECTED"
+                ]
+              },
+              "teamId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "RAINOUT",
+                  "RESCHEDULE",
+                  "SCORE"
+                ]
+              },
+              "updatedAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "reviewedByEmail": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 254,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "submittedByEmail": {
+                "type": "string",
+                "maxLength": 254,
+                "format": "email",
+                "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+              }
+            },
+            "required": [
+              "awayScore",
+              "createdAt",
+              "decisionNote",
+              "gameId",
+              "gameVersion",
+              "homeScore",
+              "id",
+              "note",
+              "proposedFieldName",
+              "proposedScheduled",
+              "reviewedAt",
+              "status",
+              "teamId",
+              "type",
+              "updatedAt",
+              "version",
+              "reviewedByEmail",
+              "submittedByEmail"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "activity",
+        "managers",
+        "organizerContactEmail",
+        "reports"
+      ],
+      "additionalProperties": false
+    },
+    "results": {
+      "maxItems": 5000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "awayScore": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999
+          },
+          "gameId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+          },
+          "homeScore": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+          },
+          "submittedAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+          },
+          "updatedAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "awayScore",
+          "gameId",
+          "homeScore",
+          "id",
+          "submittedAt",
+          "updatedAt",
+          "version"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "sync": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+        },
+        "lastSyncedRevision": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "connected",
+            "local-only"
+          ]
+        },
+        "pendingOperations": {
+          "maxItems": 100,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "ADD_TEAM"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "maxLength": 80
+                      },
+                      "proposedTeamId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "proposedTeamId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "ARCHIVE_LEAGUE"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "archived": {
+                        "type": "boolean"
+                      },
+                      "expectedLeagueVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "archived",
+                      "expectedLeagueVersion"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "MARK_RAINOUT"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "expectedGameVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      "gameId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                      }
+                    },
+                    "required": [
+                      "expectedGameVersion",
+                      "gameId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "REMOVE_TEAM"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "expectedTeamVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      "teamId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                      }
+                    },
+                    "required": [
+                      "expectedTeamVersion",
+                      "teamId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "RENAME_TEAM"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "expectedTeamVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      "name": {
+                        "type": "string",
+                        "maxLength": 80
+                      },
+                      "teamId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                      }
+                    },
+                    "required": [
+                      "expectedTeamVersion",
+                      "name",
+                      "teamId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "RESCHEDULE_GAME"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "expectedGameVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      "fieldName": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 80
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "gameId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                      },
+                      "scheduled": {
+                        "type": "object",
+                        "properties": {
+                          "localDate": {
+                            "type": "string",
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                          },
+                          "localTime": {
+                            "type": "string",
+                            "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                          },
+                          "timeZone": {
+                            "type": "string",
+                            "maxLength": 100
+                          },
+                          "utc": {
+                            "type": "string",
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                          }
+                        },
+                        "required": [
+                          "localDate",
+                          "localTime",
+                          "timeZone",
+                          "utc"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "expectedGameVersion",
+                      "fieldName",
+                      "gameId",
+                      "scheduled"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "REVIEW_REPORT"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "decision": {
+                        "type": "string",
+                        "enum": [
+                          "APPROVE",
+                          "REJECT"
+                        ]
+                      },
+                      "decisionNote": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 2000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "expectedReportVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      "reportId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                      }
+                    },
+                    "required": [
+                      "decision",
+                      "decisionNote",
+                      "expectedReportVersion",
+                      "reportId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "SET_SCORE"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "awayScore": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 999
+                      },
+                      "expectedGameVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      "gameId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                      },
+                      "homeScore": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 999
+                      }
+                    },
+                    "required": [
+                      "awayScore",
+                      "expectedGameVersion",
+                      "gameId",
+                      "homeScore"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "SUBMIT_REPORT"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "awayScore": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 999
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "expectedGameVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      },
+                      "gameId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                      },
+                      "homeScore": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 999
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "note": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 2000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "proposedFieldName": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 80
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "proposedScheduled": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "localDate": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                              },
+                              "localTime": {
+                                "type": "string",
+                                "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                              },
+                              "timeZone": {
+                                "type": "string",
+                                "maxLength": 100
+                              },
+                              "utc": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                              }
+                            },
+                            "required": [
+                              "localDate",
+                              "localTime",
+                              "timeZone",
+                              "utc"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "reportType": {
+                        "type": "string",
+                        "enum": [
+                          "RAINOUT",
+                          "RESCHEDULE",
+                          "SCORE"
+                        ]
+                      },
+                      "teamId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                      }
+                    },
+                    "required": [
+                      "awayScore",
+                      "expectedGameVersion",
+                      "gameId",
+                      "homeScore",
+                      "note",
+                      "proposedFieldName",
+                      "proposedScheduled",
+                      "reportType",
+                      "teamId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "baseRevision": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "UPDATE_LEAGUE"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {
+                      "changes": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "maxLength": 80
+                          },
+                          "schedule": {
+                            "type": "object",
+                            "properties": {
+                              "durationMinutes": {
+                                "type": "integer",
+                                "minimum": 5,
+                                "maximum": 1440
+                              },
+                              "fields": {
+                                "maxItems": 100,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "maxLength": 80
+                                }
+                              },
+                              "startDate": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "startTimes": {
+                                "maxItems": 100,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                                }
+                              },
+                              "weekdays": {
+                                "maxItems": 7,
+                                "type": "array",
+                                "items": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 6
+                                }
+                              }
+                            },
+                            "required": [
+                              "durationMinutes",
+                              "fields",
+                              "startDate",
+                              "startTimes",
+                              "weekdays"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "scoring": {
+                            "type": "object",
+                            "properties": {
+                              "lossPoints": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 99
+                              },
+                              "showStandings": {
+                                "type": "boolean"
+                              },
+                              "tiePoints": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 99
+                              },
+                              "winPoints": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 99
+                              }
+                            },
+                            "required": [
+                              "lossPoints",
+                              "showStandings",
+                              "tiePoints",
+                              "winPoints"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "seasonLabel": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 60
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "sport": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 60
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "timeZone": {
+                            "type": "string",
+                            "maxLength": 100
+                          },
+                          "venue": {
+                            "type": "object",
+                            "properties": {
+                              "address": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 180
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "name": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 80
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "url": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 2048
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "address",
+                              "name",
+                              "url"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "additionalProperties": false
+                      },
+                      "expectedLeagueVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "changes",
+                      "expectedLeagueVersion"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "baseRevision",
+                  "clientId",
+                  "createdAt",
+                  "operationId",
+                  "kind",
+                  "payload"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "clientId",
+        "lastSyncedRevision",
+        "mode",
+        "pendingOperations"
+      ],
+      "additionalProperties": false
+    },
+    "teamPacket": {
+      "type": "object",
+      "properties": {
+        "reports": {
+          "maxItems": 10000,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "awayScore": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 999
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "createdAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+              },
+              "decisionNote": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "gameId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+              },
+              "gameVersion": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "homeScore": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 999
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+              },
+              "note": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "proposedFieldName": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 80
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "proposedScheduled": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "localDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                      },
+                      "localTime": {
+                        "type": "string",
+                        "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                      },
+                      "timeZone": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "utc": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                      }
+                    },
+                    "required": [
+                      "localDate",
+                      "localTime",
+                      "timeZone",
+                      "utc"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "APPROVED",
+                  "PENDING",
+                  "REJECTED"
+                ]
+              },
+              "teamId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "RAINOUT",
+                  "RESCHEDULE",
+                  "SCORE"
+                ]
+              },
+              "updatedAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "awayScore",
+              "createdAt",
+              "decisionNote",
+              "gameId",
+              "gameVersion",
+              "homeScore",
+              "id",
+              "note",
+              "proposedFieldName",
+              "proposedScheduled",
+              "reviewedAt",
+              "status",
+              "teamId",
+              "type",
+              "updatedAt",
+              "version"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "teamId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+        }
+      },
+      "required": [
+        "reports",
+        "teamId"
+      ],
+      "additionalProperties": false
+    },
+    "teams": {
+      "minItems": 1,
+      "maxItems": 1000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "updatedAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,3})?Z$"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "name",
+          "updatedAt",
+          "version"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "$schema",
+    "dataRevision",
+    "documentId",
+    "export",
+    "format",
+    "games",
+    "league",
+    "results",
+    "schemaVersion",
+    "teams"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      ]
+    }
+  },
+  "$id": "https://gameology.space/schemas/rec-league/v1.json",
+  "title": "Gameology Rec League portable document, version 1",
+  "description": "Portable league data. Cross-record references, privacy scopes, schedule collisions, and state transitions are additionally checked by the application validator."
+}

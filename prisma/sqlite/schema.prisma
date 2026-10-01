@@ -1,0 +1,273 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../../app/generated/prisma/sqlite"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum GameStatus {
+  SCHEDULED
+  COMPLETED
+  RAINED_OUT
+  RESCHEDULED
+}
+
+enum GameReportType {
+  SCORE
+  RAINOUT
+  RESCHEDULE
+}
+
+enum GameReportStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MagicLinkPurpose {
+  SIGN_IN
+  TEAM_MANAGER_INVITE
+  ORGANIZER_EMAIL_CHANGE
+}
+
+model League {
+  id                  String    @id @default(cuid())
+  name                String
+  slug                String    @unique
+  sport               String?
+  seasonLabel         String?
+  commissionerEmail   String?
+  scheduleStartDate   String?
+  gameDays            String?
+  gameTimes           String?
+  timezone            String    @default("America/Los_Angeles")
+  fieldNames          String?
+  gameDurationMinutes Int       @default(60)
+  venueName           String?
+  venueAddress        String?
+  venueUrl            String?
+  winPoints           Int       @default(3)
+  tiePoints           Int       @default(1)
+  lossPoints          Int       @default(0)
+  showStandings       Boolean   @default(true)
+  archivedAt          DateTime?
+  dataRevision        Int       @default(1)
+  version             Int       @default(1)
+  publicUpdatedAt     DateTime  @default(now())
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  teams           Team[]
+  games           Game[]
+  magicLinkTokens MagicLinkToken[]
+  teamManagers    TeamManager[]
+  gameReports     GameReport[]
+  activityEvents  ActivityEvent[]
+  appliedOperations AppliedOperation[]
+  importPreviews ImportPreview[]
+
+  @@index([commissionerEmail])
+}
+
+model MagicLinkToken {
+  id                        String           @id @default(cuid())
+  token                     String           @unique
+  email                     String
+  leagueId                  String
+  teamId                    String?
+  purpose                   MagicLinkPurpose @default(SIGN_IN)
+  expectedCommissionerEmail String?
+  expiresAt                 DateTime
+  usedAt                    DateTime?
+  createdAt                 DateTime         @default(now())
+
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([email, leagueId])
+}
+
+model CommissionerSession {
+  id            String   @id @default(cuid())
+  token         String   @unique
+  email         String
+  scopeLeagueId String?
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+
+  @@index([token])
+  @@index([email])
+  @@index([scopeLeagueId])
+}
+
+model RateLimitEvent {
+  id        String   @id @default(cuid())
+  action    String
+  keyHash   String
+  createdAt DateTime @default(now())
+
+  @@index([action, keyHash, createdAt])
+  @@index([createdAt])
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  leagueId  String
+  name      String
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  league    League        @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  homeGames Game[]        @relation("HomeTeamGames")
+  awayGames Game[]        @relation("AwayTeamGames")
+  managers  TeamManager[]
+  reports   GameReport[]
+
+  @@unique([leagueId, name])
+  @@index([leagueId])
+}
+
+model Game {
+  id          String     @id @default(cuid())
+  leagueId    String
+  round       Int
+  homeTeamId  String
+  awayTeamId  String
+  scheduledAt DateTime?
+  fieldName   String?
+  locked      Boolean    @default(false)
+  status      GameStatus @default(SCHEDULED)
+  version     Int        @default(1)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  league   League       @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  homeTeam Team         @relation("HomeTeamGames", fields: [homeTeamId], references: [id], onDelete: Cascade)
+  awayTeam Team         @relation("AwayTeamGames", fields: [awayTeamId], references: [id], onDelete: Cascade)
+  result   Result?
+  reports  GameReport[]
+
+  @@index([leagueId, round])
+  @@index([homeTeamId])
+  @@index([awayTeamId])
+}
+
+model Result {
+  id          String   @id @default(cuid())
+  gameId      String   @unique
+  homeScore   Int
+  awayScore   Int
+  version     Int      @default(1)
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}
+
+model TeamManager {
+  id         String    @id @default(cuid())
+  leagueId   String
+  teamId     String
+  email      String
+  acceptedAt DateTime?
+  version    Int       @default(1)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, email])
+  @@index([email, leagueId])
+  @@index([leagueId, teamId])
+}
+
+model GameReport {
+  id                  String           @id @default(cuid())
+  leagueId            String
+  teamId              String
+  gameId              String
+  type                GameReportType
+  status              GameReportStatus @default(PENDING)
+  homeScore           Int?
+  awayScore           Int?
+  proposedScheduledAt DateTime?
+  proposedFieldName   String?
+  note                String?
+  submittedByEmail    String
+  reviewedByEmail     String?
+  reviewedAt          DateTime?
+  decisionNote        String?
+  gameVersion         Int              @default(1)
+  version             Int              @default(1)
+  pendingKey          String?          @unique
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@index([leagueId, status, createdAt])
+  @@index([teamId, status, createdAt])
+  @@index([gameId, status])
+}
+
+model ActivityEvent {
+  id         String   @id @default(cuid())
+  leagueId   String
+  actorEmail String?
+  actorRole  String   @default("UNKNOWN")
+  type       String
+  summary    String
+  gameId     String?
+  teamId     String?
+  operationId String?
+  detailsJson String?
+  createdAt  DateTime @default(now())
+
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+
+  @@index([leagueId, createdAt])
+  @@index([leagueId, operationId])
+}
+
+model AppliedOperation {
+  id              String   @id @default(cuid())
+  leagueId        String
+  operationId     String
+  operationType   String
+  payloadHash     String
+  actorRole       String
+  actorEmail      String?
+  teamId          String?
+  appliedRevision Int
+  outcomeJson     String
+  createdAt       DateTime @default(now())
+
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+
+  @@unique([leagueId, operationId])
+  @@index([leagueId, appliedRevision])
+}
+
+model ImportPreview {
+  id               String   @id @default(cuid())
+  leagueId         String
+  organizerEmail   String
+  mode             String
+  sourceHash       String
+  sourceJson       String
+  expectedRevision Int
+  summaryJson      String
+  expiresAt        DateTime
+  createdAt        DateTime @default(now())
+
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+
+  @@index([leagueId, organizerEmail, expiresAt])
+  @@index([expiresAt])
+}

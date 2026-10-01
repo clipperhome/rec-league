@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false,
+    "types": ["vite/client"]
+  },
+  "include": [
+    "portable/**/*.ts",
+    "portable/**/*.tsx",
+    "lib/game-conflicts.ts",
+    "lib/game-state.ts",
+    "lib/manager-report-rules.ts",
+    "lib/schedule.ts",
+    "lib/standings.ts",
+    "lib/portable/**/*.ts",
+    "vite.portable.config.ts"
+  ],
+  "exclude": ["node_modules", "lib/**/*.test.ts", "lib/portable-server/**"]
+}
